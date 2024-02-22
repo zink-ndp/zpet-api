@@ -5,6 +5,7 @@ const customersController = require('../controller/customers.controller')
 
 // GET
 router.get("/", customersController.getAll)
+router.get("/search/:s", customersController.getSearch)
 router.get("/:id", customersController.getById)
 router.get("/:id/address", customersController.getAddress)
 router.get("/:id/pets", customersController.getPets)

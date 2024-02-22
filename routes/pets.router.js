@@ -8,5 +8,6 @@ router.get("/",petsController.getAll)
 router.get("/:id",petsController.getById)
 router.get("/:id/mainimg",petsController.getMainImg)
 router.get("/:id/imgs",petsController.getImgs)
+router.get("/search/:s", petsController.getSearch)
 
 module.exports = router

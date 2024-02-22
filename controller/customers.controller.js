@@ -55,6 +55,24 @@ const customersController = {
     }
   },
 
+  getSearch: async (req, res) => {
+    try {
+      const { s } = req.params;
+      const [rows, fields] = await pool.query(
+        `select* from customer where CTM_ID like '%${s}%' or CTM_NAME like '%${s}%' or CTM_PHONE like '%${s}%'`
+      );
+      res.json({
+        data: rows,
+        message: "OK",
+      });
+    } catch (error) {
+      res.json({
+        message: "Lỗi: ",
+        error,
+      });
+    }
+  },
+
   getPets: async (req, res) => {
     try {
       const { id } = req.params;
