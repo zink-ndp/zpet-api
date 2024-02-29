@@ -9,6 +9,7 @@ router.get("/:id", appointmentController.getById)
 router.get("/customer/:id", appointmentController.getByCusId)
 router.get("/status/:stt", appointmentController.getByStt)
 router.get("/services/:id", appointmentController.getSrvById)
+router.get("/status/list/:id", appointmentController.getSttById)
 
 // UPDATE
 router.put("/status/:id", appointmentController.updateStatus)

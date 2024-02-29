@@ -110,6 +110,24 @@ const appointmentController = {
     }
   },
 
+  getSttById: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const [rows, fields] = await pool.query(
+        "SELECT * from apm_stt apms join appointment a on a.APM_ID = apms.APM_ID where a.APM_ID=? order by apms.STT_ID desc",
+        [id]
+      );
+      res.json({
+        data: rows,
+        message: "OK",
+      });
+    } catch (error) {
+      res.json({
+        message: "error" + error,
+      });
+    }
+  },
+
   // UPDATE - PUT
 
   updateStatus: async (req, res) => {
