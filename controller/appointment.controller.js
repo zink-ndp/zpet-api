@@ -1,4 +1,5 @@
 const pool = require("../db/index");
+const usuallyFunc = require("../functions");
 
 const appointmentController = {
   // GET
@@ -56,17 +57,37 @@ const appointmentController = {
   getByStt: async (req, res) => {
     try {
       const { stt } = req.params;
-      const [rows, fields] = await pool.query(
-        "SELECT distinct *, c.CTM_NAME FROM appointment a join customer c on c.CTM_ID = a.CTM_ID join apm_stt astt on astt.APM_ID = a.APM_ID where astt.STT_ID=? order by astt.ATTIME desc",
-        [stt]
-      );
+
+      var exceptStt = "";
+      switch (stt) {
+        case "1":
+          exceptStt = "and apms.APM_ID NOT IN (select t.APM_ID from apm_stt t where t.STT_ID=2 or t.STT_ID=3 or t.STT_ID=4)";
+          break;
+        case "2":
+          exceptStt = "and apms.APM_ID NOT IN (select t.APM_ID from apm_stt t where t.STT_ID=3 or t.STT_ID=4)";
+          break;
+        case "3":
+          exceptStt = "and apms.APM_ID NOT IN (select t.APM_ID from apm_stt t where t.STT_ID=4)";
+          break;
+        case "4":
+          exceptStt = "";
+          break;
+
+        default:
+          break;
+      }
+
+      var query = `SELECT a.*, apms.*, c.CTM_NAME FROM apm_stt apms join appointment a on a.APM_ID = apms.APM_ID join customer c on c.CTM_ID = a.CTM_ID where STT_ID=${stt} ${exceptStt}`;
+
+      const [rows, fields] = await pool.query(query);
+
       res.json({
         data: rows,
         message: "OK",
       });
     } catch (error) {
       res.json({
-        message: "error"+error,
+        message: "error" + error,
       });
     }
   },
@@ -84,7 +105,36 @@ const appointmentController = {
       });
     } catch (error) {
       res.json({
-        message: "error"+error,
+        message: "error" + error,
+      });
+    }
+  },
+
+  // UPDATE - PUT
+
+  updateStatus: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { sttId, sttDescription } = req.body;
+      const dateTime = usuallyFunc.getNow();
+      const [rows, fields] = await pool
+        .query("insert into timing values (?)", [dateTime])
+        .then(
+          pool.query("insert into apm_stt values (?,?,?,?)", [
+            id,
+            dateTime,
+            sttId,
+            sttDescription,
+          ])
+        );
+      res.json({
+        data: rows,
+        message: "Update thành công!",
+      });
+    } catch (error) {
+      res.json({
+        data: error,
+        message: "Update thất bại!",
       });
     }
   },
@@ -101,26 +151,7 @@ const appointmentController = {
 
       nextId = rowsId[0].maxid + 1;
 
-      const currentDate = new Date();
-      const year = currentDate.getFullYear();
-      const month = String(currentDate.getMonth() + 1).padStart(2, "0");
-      const day = String(currentDate.getDate()).padStart(2, "0");
-      const hours = String(currentDate.getHours()).padStart(2, "0");
-      const minutes = String(currentDate.getMinutes()).padStart(2, "0");
-      const seconds = String(currentDate.getSeconds()).padStart(2, "0");
-
-      const dateTime =
-        year +
-        "/" +
-        month +
-        "/" +
-        day +
-        " " +
-        hours +
-        ":" +
-        minutes +
-        ":" +
-        seconds;
+      const dateTime = usuallyFunc.getNow();
 
       const [rows, fields] = await pool
         .query("insert into timing values (?)", [dateTime])
@@ -151,6 +182,7 @@ const appointmentController = {
         );
       res.json({
         data: rows,
+        message: "Tạo lịch hẹn thành công!",
       });
     } catch (error) {
       res.json({
