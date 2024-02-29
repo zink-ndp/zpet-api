@@ -11,8 +11,7 @@ const customersController = {
       });
     } catch (error) {
       res.json({
-        message: "Lỗi: ",
-        error,
+        message: "Lỗi: " + error,
       });
     }
   },
@@ -30,8 +29,24 @@ const customersController = {
       });
     } catch (error) {
       res.json({
-        message: "Lỗi: ",
-        error,
+        message: "Lỗi: " + error,
+      });
+    }
+  },
+
+  getByPhone: async (req, res) => {
+    try {
+      const { phone } = req.params;
+      const [rows, fields] = await pool.query(
+        `select * from customer where CTM_PHONE like '%${phone}%'`
+      );
+      res.json({
+        data: rows,
+        message: "OK",
+      });
+    } catch (error) {
+      res.json({
+        message: "Lỗi: " + error,
       });
     }
   },
@@ -49,8 +64,7 @@ const customersController = {
       });
     } catch (error) {
       res.json({
-        message: "Lỗi: ",
-        error,
+        message: "Lỗi: " + error,
       });
     }
   },
@@ -67,8 +81,7 @@ const customersController = {
       });
     } catch (error) {
       res.json({
-        message: "Lỗi: ",
-        error,
+        message: "Lỗi: " + error,
       });
     }
   },
@@ -86,8 +99,7 @@ const customersController = {
       });
     } catch (error) {
       res.json({
-        message: "Lỗi: ",
-        error,
+        message: "Lỗi: " + error,
       });
     }
   },
@@ -105,8 +117,7 @@ const customersController = {
       });
     } catch (error) {
       res.json({
-        message: "Lỗi: ",
-        error,
+        message: "Lỗi: " + error,
       });
     }
   },
@@ -124,8 +135,7 @@ const customersController = {
       });
     } catch (error) {
       res.json({
-        message: "Lỗi: ",
-        error,
+        message: "Lỗi: " + error,
       });
     }
   },
@@ -143,8 +153,7 @@ const customersController = {
       });
     } catch (error) {
       res.json({
-        message: "Lỗi: ",
-        error,
+        message: "Lỗi: " + error,
       });
     }
   },

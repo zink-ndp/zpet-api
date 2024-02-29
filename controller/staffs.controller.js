@@ -12,8 +12,7 @@ const staffsController = {
             
         } catch (error) {
             res.json({
-                message: "Lỗi: ",
-                error,
+                message: "Lỗi: "+error,
               });
         }
     },
@@ -29,8 +28,7 @@ const staffsController = {
             
         } catch (error) {
             res.json({
-                message: "Lỗi: ",
-                error,
+                message: "Lỗi: "+error,
               });
         }
     },
@@ -71,8 +69,7 @@ const staffsController = {
             
         } catch (error) {
             res.json({
-                message: "Lỗi: ",
-                error,
+                message: "Lỗi: "+error,
               });
         }
     },
@@ -88,8 +85,7 @@ const staffsController = {
             
         } catch (error) {
             res.json({
-                message: "Lỗi: ",
-                error,
+                message: "Lỗi: "+error,
               });
         }
     },
@@ -105,8 +101,7 @@ const staffsController = {
             
         } catch (error) {
             res.json({
-                message: "Lỗi: ",
-                error,
+                message: "Lỗi: "+error,
               });
         }
     },
