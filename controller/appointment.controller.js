@@ -168,7 +168,7 @@ const appointmentController = {
           pool.query("insert into apm_stt values (?,?,?,?)", [
             nextId,
             dateTime,
-            0,
+            1,
             "Lịch hẹn đã được tạo",
           ])
         )
