@@ -114,7 +114,7 @@ const appointmentController = {
     try {
       const { id } = req.params;
       const [rows, fields] = await pool.query(
-        "SELECT * from apm_stt apms join appointment a on a.APM_ID = apms.APM_ID where a.APM_ID=? order by apms.STT_ID desc",
+        "SELECT * from apm_stt apms join appointment a on a.APM_ID = apms.APM_ID join status s on s.STT_ID = apms.STT_ID where a.APM_ID=? order by apms.STT_ID desc",
         [id]
       );
       res.json({
@@ -135,8 +135,7 @@ const appointmentController = {
       const { id } = req.params;
       const { sttId, sttDescription } = req.body;
       const dateTime = usuallyFunc.getNow();
-      const [rows, fields] = await pool
-        .query("insert into timing values (?)", [dateTime])
+      const [rows, fields] = await pool.query("insert into timing values (?)", [dateTime])
         .then(
           pool.query("insert into apm_stt values (?,?,?,?)", [
             id,
