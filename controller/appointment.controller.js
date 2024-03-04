@@ -161,14 +161,10 @@ const appointmentController = {
   create: async (req, res) => {
     try {
       const { cusId, date, time, note, services } = req.body;
-      var nextId;
+      
+      const nextId = await usuallyFunc.getNextId('APM_ID','appointment')
 
-      const sql_getMaxId = "select max(APM_ID) as maxid from appointment";
-      const [rowsId, fieldsId] = await pool.query(sql_getMaxId);
-
-      nextId = rowsId[0].maxid + 1;
-
-      const dateTime = usuallyFunc.getNow();
+      const dateTime = await usuallyFunc.getNow();
 
       const [rows, fields] = await pool
         .query("insert into timing values (?)", [dateTime])

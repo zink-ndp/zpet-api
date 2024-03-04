@@ -16,5 +16,7 @@ router.get("/:id/appointments", customersController.getAppointments)
 // UPDATE - PUT
 
 // ADD - POST
+router.post("/:id/address", customersController.addAddress)
+
 
 module.exports = router

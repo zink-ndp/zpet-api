@@ -1,4 +1,13 @@
+const pool = require('./db/index')
+
 const usuallyFunc = {
+
+  getNextId: async (col, table) => {
+    const sql_getMaxId = "select max("+col+") as maxid from "+table;
+    const [rowsId, fieldsId] = await pool.query(sql_getMaxId);
+    return parseInt(rowsId[0].maxid + 1)
+  },
+
   getNow: () => {
     const currentDate = new Date();
     const year = currentDate.getFullYear();
