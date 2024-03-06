@@ -141,6 +141,24 @@ const customersController = {
     }
   },
 
+  getInvoices: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const [ rows, fields ] = await pool.query(
+        "select * from invoice where CTM_ID=?",
+        [id]
+      );
+      res.json({
+        data: rows,
+        message: "OK",
+      });
+    } catch (error) {
+      res.json({
+        message: error,
+      });
+    }
+  },
+
   getRates: async (req, res) => {
     try {
       const { id } = req.params;
@@ -159,27 +177,48 @@ const customersController = {
     }
   },
   // UPDATE - PUT
-  
-  // ADD - POST
-    addAddress: async (req, res) => {
-      try {
-        const { id } = req.params;
-        const { receiver, province, district, ward, note, lat, lng } = req.body;
-        var nextId = await usuallyFunc.getNextId('ADR_ID','address')
-        nextId = parseInt(JSON.stringify(nextId))
-        const sql = "insert into address values ("+nextId+","+id+",'"+receiver+"','"+province+"','"+district+"','"+ward+"','"+note+"','"+lat+"','"+lng+"')"
-        const [rows, fields] = await pool.query(sql);
-        res.json({
-          data: rows,
-          message: "OK",
-        });
-      } catch (error) {
-        res.json({
-          message: "Lỗi: " + error,
-        });
-      }
-    },
-};
 
+  // ADD - POST
+  addAddress: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { receiver, province, district, ward, note, lat, lng, dist } =
+        req.body;
+      var nextId = await usuallyFunc.getNextId("ADR_ID", "address");
+      nextId = parseInt(JSON.stringify(nextId));
+      const sql =
+        "insert into address values (" +
+        nextId +
+        "," +
+        id +
+        ",'" +
+        receiver +
+        "','" +
+        province +
+        "','" +
+        district +
+        "','" +
+        ward +
+        "','" +
+        note +
+        "','" +
+        lat +
+        "','" +
+        lng +
+        "'," +
+        dist +
+        ")";
+      const [rows, fields] = await pool.query(sql);
+      res.json({
+        data: rows,
+        message: "OK",
+      });
+    } catch (error) {
+      res.json({
+        message: "Lỗi: " + error,
+      });
+    }
+  },
+};
 
 module.exports = customersController;

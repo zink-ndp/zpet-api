@@ -12,6 +12,7 @@ router.get("/:id/address", customersController.getAddress)
 router.get("/:id/pets", customersController.getPets)
 router.get("/:id/points", customersController.getPoints)
 router.get("/:id/appointments", customersController.getAppointments)
+router.get("/:id/invoices", customersController.getInvoices)
 
 // UPDATE - PUT
 
