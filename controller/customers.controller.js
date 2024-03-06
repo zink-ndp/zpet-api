@@ -144,7 +144,7 @@ const customersController = {
   getInvoices: async (req, res) => {
     try {
       const { id } = req.params;
-      const [ rows, fields ] = await pool.query(
+      const [rows, fields] = await pool.query(
         "select * from invoice where CTM_ID=?",
         [id]
       );
@@ -179,6 +179,27 @@ const customersController = {
   // UPDATE - PUT
 
   // ADD - POST
+
+  create: async (req, res) => {
+    try {
+      const { phone, name } = req.body;
+      const nextId = await usuallyFunc.getNextId("CTM_ID", "customer");
+      const time = usuallyFunc.getNow();
+      const [rows, fields] = await pool.query(
+        "insert into customer values (?, ?, ?, null, '" + time + "', 1)",
+        [nextId, phone, name]
+      );
+      res.json({
+        data: rows,
+        message: "OK",
+      });
+    } catch (error) {
+      res.json({
+        message: error,
+      });
+    }
+  },
+
   addAddress: async (req, res) => {
     try {
       const { id } = req.params;
