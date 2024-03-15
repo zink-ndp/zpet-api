@@ -1,4 +1,5 @@
 const pool = require("../db/index");
+const { getNextId } = require("../functions");
 
 const petsController = {
   //GET
@@ -78,6 +79,66 @@ const petsController = {
       const { s } = req.params;
       const [rows, fields] = await pool.query(
         `select * from pet p join pet_type pt on pt.PT_ID = p.PT_ID join pet_image pi on pi.P_ID = p.P_ID where pi.PIMG_ISMAINIMG=true and (p.P_NAME like '%${s}%' or pt.PT_NAME like '%${s}%' or p.P_SPECIE like '%${s}%')`
+      );
+      res.json({
+        data: rows,
+        message: "OK",
+      });
+    } catch (error) {
+      res.json({
+        message: "Lỗi: " + error,
+      });
+    }
+  },
+
+  // POST
+  create: async (req, res) => {
+    try {
+      const nextId = await getNextId("P_ID", "pet");
+      const nextImgId = await getNextId("PIMG_ID", "pet_image");
+
+      const { cusId, petType, name, specie, gender, birthday, img } = req.body;
+      const sql =
+        "insert into pet values (" +
+        nextId +
+        "," +
+        cusId +
+        "," +
+        petType +
+        ",'" +
+        name +
+        "','" +
+        specie +
+        "'," +
+        gender +
+        ",'" +
+        birthday +
+        "')";
+      const [rows, fields] = await pool.query(sql).then(
+        img.forEach(async (i, idx) => {
+          let nImgId = nextImgId + idx
+          if (idx == 0) {
+            pool.query(
+              "insert into pet_image values (" +
+                nImgId +
+                "," +
+                nextId +
+                ",'" +
+                i +
+                "',1)"
+            );
+          } else {
+            pool.query(
+              "insert into pet_image values (" +
+                nImgId +
+                "," +
+                nextId +
+                ",'" +
+                i +
+                "',0)"
+            );
+          }
+        })
       );
       res.json({
         data: rows,
