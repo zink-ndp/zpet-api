@@ -6,7 +6,9 @@ const invoicesController = {
 
   getAll: async (req, res) => {
     try {
-      const [ rows, fields ] = await pool.query("select i.*, c.CTM_NAME from invoice i join customer c on c.CTM_ID = i.CTM_ID");
+      const [rows, fields] = await pool.query(
+        "select i.*, c.CTM_NAME, s.STF_NAME from invoice i join customer c on c.CTM_ID = i.CTM_ID join staff s on s.STF_ID=i.STF_ID left join voucher v on v.VOU_ID=i.VOU_ID"
+      );
       res.json({
         data: rows,
         message: "OK",
@@ -54,45 +56,68 @@ const invoicesController = {
     }
   },
 
+  getById: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const sqlInfo =
+        "select i.*, v.*, s.STF_NAME from invoice i join staff s on s.STF_ID=i.STF_ID left join voucher v on v.VOU_ID=i.VOU_ID where i.INV_ID=" +
+        id;
+      const sqlDetail =
+        "select s.* from invoice i join inv_include_srv iis on i.INV_ID=iis.INV_ID join service s on s.SRV_ID=iis.SRV_ID where i.INV_ID=" +
+        id;
+      const [rowsInfo, fieldsI] = await pool.query(sqlInfo);
+      const [rowsDetail, fieldsD] = await pool.query(sqlDetail);
+      res.json({
+        info: rowsInfo,
+        detail: rowsDetail,
+        message: "OK",
+      });
+    } catch (error) {
+      res.json({
+        message: "Lỗi: " + error,
+      });
+    }
+  },
 
   // POST
 
   create: async (req, res) => {
     try {
       const nextId = await getNextId("INV_ID", "invoice");
-      const { vou, cusId, sfId, stfId, adrId, total, time, services } =
+      const { vou, cusId, sfId, stfId, adrId, pId, total, time, services } =
         req.body;
-      const [rows, fields] = await pool
-        .query(
-          "insert into invoice values (" +
-            nextId +
-            ", " +
-            vou +
-            ", " +
-            cusId +
-            "," +
-            sfId +
-            ", " +
-            stfId +
-            ", " +
-            adrId +
-            ", " +
-            total +
-            ", '" +
-            time +
-            "')"
-        )
-        .then(
-          services.forEach((srv) => {
-            pool.query("insert into inv_include_srv values (?,?)", [
-              parseInt(srv),
-              nextId,
-            ]);
-          })
-        );
+      const sql =
+        "insert into invoice values (" +
+        nextId +
+        ", " +
+        sfId +
+        ", " +
+        stfId +
+        ", " +
+        adrId +
+        ", " +
+        cusId +
+        "," +
+        vou +
+        ", " +
+        pId +
+        ", " +
+        total +
+        ", '" +
+        time +
+        "')";
+      const [rows, fields] = await pool.query(sql)
+      .then(
+        services.forEach((srv) => {
+          pool.query("insert into inv_include_srv values (?,?)", [
+            parseInt(srv),
+            nextId,
+          ]);
+        })
+      );
       res.json({
         data: rows,
-        message: "OK",
+        message: sql,
       });
     } catch (error) {
       res.json({

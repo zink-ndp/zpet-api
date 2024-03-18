@@ -6,6 +6,7 @@ const invoicesController = require('../controller/invoices.controller')
 // GET
 
 router.get("/",invoicesController.getAll)
+router.get("/:id",invoicesController.getById)
 router.get("/search/:s",invoicesController.getSearch)
 router.get("/shipfee/:dist",invoicesController.getShipFee)
 

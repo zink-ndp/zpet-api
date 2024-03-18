@@ -145,7 +145,7 @@ const customersController = {
     try {
       const { id } = req.params;
       const [rows, fields] = await pool.query(
-        "select * from invoice where CTM_ID=?",
+        "select i.*, c.CTM_NAME, s.STF_NAME from invoice i join customer c on c.CTM_ID = i.CTM_ID join staff s on s.STF_ID=i.STF_ID left join voucher v on v.VOU_ID=i.VOU_ID where i.CTM_ID=?",
         [id]
       );
       res.json({
