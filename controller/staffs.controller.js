@@ -33,32 +33,6 @@ const staffsController = {
     }
   },
 
-  getLoginInfo: async (req, res) => {
-    try {
-      const { email, pw, role } = req.params;
-      const [rows, fields] = await pool.query(
-        "select * from staff where STF_EMAIL=? and STF_PASSWORD=? and STF_ISMANAGER=?",
-        [email, pw, role]
-      );
-
-      if (rows.length > 0 && rows[0].STF_ISWORKING != 0) {
-        res.json({
-          data: rows,
-          message: "OK",
-        });
-      } else {
-        res.json({
-          data: [],
-          message: "Thông tin đăng nhập không đúng",
-        });
-      }
-    } catch (error) {
-      res.json({
-        message: "Lỗi: " + error,
-      });
-    }
-  },
-
   getSearch: async (req, res) => {
     try {
       const { s } = req.params;
@@ -111,6 +85,36 @@ const staffsController = {
       });
     }
   },
+
+  // POST
+  login: async (req, res) => {
+    try {
+      const { email, pw, role } = req.body;
+      const [rows, fields] = await pool.query(
+        "select STF_ID, STF_EMAIL, STF_NAME, STF_PHONE from staff where STF_EMAIL=? and STF_PASSWORD=? and STF_ISMANAGER=? and STF_ISWORKING=1",
+        [email, pw, role]
+      );
+
+      if (rows.length > 0 && rows[0].STF_ISWORKING != 0) {
+        res.json({
+          auth: true,
+          data: rows,
+          message: "Đăng nhập thành công",
+        });
+      } else {
+        res.json({
+          auth: false,
+          data: [],
+          message: "Thông tin đăng nhập không đúng",
+        });
+      }
+    } catch (error) {
+      res.json({
+        message: "Lỗi: " + error,
+      });
+    }
+  }
+
 };
 
 module.exports = staffsController;
