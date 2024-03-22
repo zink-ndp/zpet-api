@@ -13,4 +13,7 @@ router.get("/statuslist/:isWk",staffsController.getStatusList)
 // POST
 router.post("/login",staffsController.login)
 
+// PUT
+router.put("/:id", staffsController.update)
+
 module.exports = router

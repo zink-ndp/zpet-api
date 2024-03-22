@@ -7,4 +7,6 @@ router.get('/',vouchersController.getAll)
 router.get('/:id',vouchersController.getById)
 router.get('/search/:s',vouchersController.getSearch)
 
+router.put('/:id', vouchersController.update)
+
 module.exports = router

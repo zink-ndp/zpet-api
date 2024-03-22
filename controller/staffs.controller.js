@@ -113,8 +113,24 @@ const staffsController = {
         message: "Lỗi: " + error,
       });
     }
-  }
+  },
 
+  update: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { name, phone, email, pw, stt, isAd } = req.body;
+      const sql = `update staff set STF_NAME='${name}', STF_PHONE='${phone}', STF_EMAIL='${email}', STF_PASSWORD='${pw}', STF_ISMANAGER=${isAd}, STF_ISWORKING=${stt} where STF_ID=${id}`;
+      const [rows, fields] = await pool.query(sql);
+      res.json({
+        data: rows,
+        message: "OK",
+      });
+    } catch (error) {
+      res.json({
+        message: "Lỗi: " + error,
+      });
+    }
+  },
 };
 
 module.exports = staffsController;

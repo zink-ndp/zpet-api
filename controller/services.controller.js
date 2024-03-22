@@ -75,7 +75,7 @@ const servicesController = {
       const { id } = req.params
       const { name, price, des, stt } = req.body;
       const [rows, fields] = await pool.query(
-        "update table service set SRV_NAME='"+name+"', SRV_DESCRIPTION='"+des+"', SRV_PRICE="+price+", SRV_ISAVAILABLE="+stt+" where SRV_ID=?",
+        "update service set SRV_NAME='"+name+"', SRV_DESCRIPTION='"+des+"', SRV_PRICE="+price+", SRV_ISAVAILABLE="+stt+" where SRV_ID=?",
         [id]
       );
       res.json({
