@@ -176,7 +176,6 @@ const customersController = {
       });
     }
   },
-  // UPDATE - PUT
 
   // ADD - POST
 
@@ -240,6 +239,24 @@ const customersController = {
       });
     }
   },
+
+  // PUT
+  update: async (req, res) => {
+    try {
+      const {id} = req.params
+      const { name, phone } = req.body
+      const [rows, fields] = await pool.query(`update customer set CTM_NAME='${name}', CTM_PHONE='${phone}' where CTM_ID=${id}`)
+      res.json({
+        data: rows,
+        message: "OK"
+      })
+    } catch (error) {
+      res.json({
+        message: "Lỗi: " + error,
+      });
+    }
+  }
+
 };
 
 module.exports = customersController;

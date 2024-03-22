@@ -14,11 +14,12 @@ router.get("/:id/points", customersController.getPoints)
 router.get("/:id/appointments", customersController.getAppointments)
 router.get("/:id/invoices", customersController.getInvoices)
 
-// UPDATE - PUT
 
 // ADD - POST
 router.post("/", customersController.create)
 router.post("/:id/address", customersController.addAddress)
 
+// UPDATE - PUT
+router.put("/:id", customersController.update)
 
 module.exports = router
