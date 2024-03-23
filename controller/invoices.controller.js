@@ -119,7 +119,7 @@ const invoicesController = {
         "')";
 
       const [pointRow, pointFields] = await pool.query(
-        "select P_TOTAL as p from point where CTM_ID=?",
+        "select P_TOTAL as p from point where CTM_ID=? order by p desc limit 1",
         [cusId]
       );
 
