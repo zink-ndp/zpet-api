@@ -7,7 +7,7 @@ const invoicesController = {
   getAll: async (req, res) => {
     try {
       const [rows, fields] = await pool.query(
-        "select i.*, v.*, a.*, c.*, s.STF_NAME from invoice i join staff s on s.STF_ID=i.STF_ID join customer c on c.CTM_ID=i.CTM_ID left join voucher v on v.VOU_ID=i.VOU_ID left join address a on a.ADR_ID=i.ADR_ID"
+        "select i.*, v.*, a.*, c.*, s.STF_NAME from invoice i join staff s on s.STF_ID=i.STF_ID join customer c on c.CTM_ID=i.CTM_ID left join voucher v on v.VOU_ID=i.VOU_ID left join address a on a.ADR_ID=i.ADR_ID order by INV_ID desc"
       );
       res.json({
         data: rows,

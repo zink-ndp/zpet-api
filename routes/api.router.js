@@ -8,6 +8,7 @@ const servicesRouter = require('./services.router')
 const vouchersRouter = require('./vouchers.router')
 const appointmentRouter = require('./appointments.router')
 const invoicesRouter = require('./invoices.router')
+const analyticRouter = require('./analytic.router')
 
 router.use("/customers", customersRouter)
 
@@ -22,5 +23,7 @@ router.use('/vouchers', vouchersRouter)
 router.use('/appointments', appointmentRouter)
 
 router.use('/invoices', invoicesRouter)
+
+router.use('/analytics', analyticRouter)
 
 module.exports = router
