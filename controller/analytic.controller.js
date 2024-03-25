@@ -28,6 +28,22 @@ const analyticContoller = {
       });
     }
   },
+
+  getByService: async (req, res) => {
+    try {
+      const { dF, dT } = req.body;
+      const sql_bySrv = `select s.SRV_NAME as label, sum(s.SRV_PRICE) as value from invoice i join inv_include_srv iis on iis.INV_ID = i.INV_ID join service s on s.SRV_ID=iis.SRV_ID where (STR_TO_DATE(SUBSTRING_INDEX(INV_CREATEDAT, '-', -1) , '%d/%m/%Y') BETWEEN '${dF}' and '${dT}') group by s.SRV_NAME`;
+      const [rows, fields] = await pool.query(sql_bySrv);
+      res.json({
+        data: rows,
+        message: "OK",
+      });
+    } catch (error) {
+      res.json({
+        message: error,
+      });
+    }
+  },
 };
 
 module.exports = analyticContoller;
