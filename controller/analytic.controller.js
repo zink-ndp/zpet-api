@@ -44,6 +44,21 @@ const analyticContoller = {
       });
     }
   },
+  getByPetType: async (req, res) => {
+    try {
+      const { dF, dT } = req.body;
+      const sql_byPT = `select pt.PT_NAME as label, sum(i.INV_TOTAL) as value from invoice i join pet p on p.P_ID = i.P_ID join pet_type pt on pt.PT_ID=p.PT_ID where (STR_TO_DATE(SUBSTRING_INDEX(i.INV_CREATEDAT, '-', -1) , '%d/%m/%Y') BETWEEN '${dF}' and '${dT}') group by pt.PT_NAME`;
+      const [rows, fields] = await pool.query(sql_byPT);
+      res.json({
+        data: rows,
+        message: "OK",
+      });
+    } catch (error) {
+      res.json({
+        message: error,
+      });
+    }
+  },
 };
 
 module.exports = analyticContoller;
