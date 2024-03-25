@@ -185,7 +185,7 @@ const customersController = {
       const nextId = await usuallyFunc.getNextId("CTM_ID", "customer");
       const time = usuallyFunc.getNow();
       const [rows, fields] = await pool.query(
-        "insert into customer values (?, ?, ?, null, '" + time + "', 1)",
+        "insert into customer values (?, ?, ?, null, '" + time + "', 0)",
         [nextId, phone, name]
       );
       res.json({
