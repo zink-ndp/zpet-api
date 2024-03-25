@@ -77,7 +77,7 @@ const appointmentController = {
           break;
       }
 
-      var query = `SELECT a.*, apms.*, c.CTM_NAME FROM apm_stt apms join appointment a on a.APM_ID = apms.APM_ID join customer c on c.CTM_ID = a.CTM_ID where STT_ID=${stt} ${exceptStt}`;
+      var query = `SELECT a.*, apms.*, c.CTM_NAME FROM apm_stt apms join appointment a on a.APM_ID = apms.APM_ID left join customer c on c.CTM_ID = a.CTM_ID where STT_ID=${stt} ${exceptStt}`;
 
       const [rows, fields] = await pool.query(query);
 
