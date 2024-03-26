@@ -109,7 +109,7 @@ const staffsController = {
     try {
       const { email, pw, role } = req.body;
       const [rows, fields] = await pool.query(
-        "select STF_ID, STF_EMAIL, STF_NAME, STF_PHONE from staff where STF_EMAIL=? and STF_PASSWORD=? and STF_ISMANAGER=? and STF_ISWORKING=1",
+        "select STF_ID, STF_EMAIL, STF_NAME, STF_PHONE, STF_ISMANAGER from staff where STF_EMAIL=? and STF_PASSWORD=? and STF_ISMANAGER=? and STF_ISWORKING=1",
         [email, pw, role]
       );
 
