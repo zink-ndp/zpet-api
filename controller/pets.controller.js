@@ -1,5 +1,5 @@
 const pool = require("../db/index");
-const { getNextId } = require("../functions");
+const { getNextId, getNow } = require("../functions");
 
 const petsController = {
   //GET
@@ -93,12 +93,15 @@ const petsController = {
 
   getHealthHistory: async (req, res) => {
     try {
-      const {id} = req.params
-      const [rows, fields] = await pool.query("select * from  pet_health where P_ID=?",[id])
+      const { id } = req.params;
+      const [rows, fields] = await pool.query(
+        "select * from  pet_health where P_ID=?",
+        [id]
+      );
       res.json({
         data: rows,
-        message: "OK"
-      })
+        message: "OK",
+      });
     } catch (error) {
       res.json({
         message: "Lỗi: " + error,
@@ -131,7 +134,7 @@ const petsController = {
         "')";
       const [rows, fields] = await pool.query(sql).then(
         img.forEach(async (i, idx) => {
-          let nImgId = nextImgId + idx
+          let nImgId = nextImgId + idx;
           if (idx == 0) {
             pool.query(
               "insert into pet_image values (" +
@@ -166,24 +169,49 @@ const petsController = {
     }
   },
 
-  // PUT
-  update: async (req, res) => {
+  updateHealth: async (req, res) => {
     try {
-      const { id } = req.params
-      const { owner, name, type, specie, gender, birth } = req.body 
-      const sql = `update pet set CTM_ID=${owner}, P_NAME='${name}', PT_ID=${type}, P_SPECIE='${specie}', P_GENDER=${gender}, P_BIRTHDAY='${birth}' where P_ID=${id}`
-      const [rows, fields] = await pool.query(sql)
+      const { id } = req.params;
+      const { health, weight } = req.body;
+      const timeNow = getNow();
+      const [rows, fields] = await pool
+        .query("insert into timing values (?)", timeNow)
+        .then(
+          pool.query("insert into pet_health values (?,?,?,?)", [
+            id,
+            timeNow,
+            weight,
+            health,
+          ])
+        );
       res.json({
         data: rows,
-        message: "OK"
-      })
+        message: "OK",
+      });
     } catch (error) {
       res.json({
         message: "Lỗi: " + error,
       });
     }
-  }
+  },
 
+  // PUT
+  update: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { owner, name, type, specie, gender, birth } = req.body;
+      const sql = `update pet set CTM_ID=${owner}, P_NAME='${name}', PT_ID=${type}, P_SPECIE='${specie}', P_GENDER=${gender}, P_BIRTHDAY='${birth}' where P_ID=${id}`;
+      const [rows, fields] = await pool.query(sql);
+      res.json({
+        data: rows,
+        message: "OK",
+      });
+    } catch (error) {
+      res.json({
+        message: "Lỗi: " + error,
+      });
+    }
+  },
 };
 
 module.exports = petsController;
