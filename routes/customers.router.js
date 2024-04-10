@@ -18,6 +18,8 @@ router.get("/:id/invoices", customersController.getInvoices)
 // ADD - POST
 router.post("/", customersController.create)
 router.post("/:id/address", customersController.addAddress)
+router.post("/checkPhone", customersController.checkPhone)
+router.post("/login", customersController.login)
 
 // UPDATE - PUT
 router.put("/:id", customersController.update)

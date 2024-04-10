@@ -39,7 +39,7 @@ const customersController = {
     try {
       const { phone } = req.params;
       const [rows, fields] = await pool.query(
-        `select * from customer where CTM_PHONE like '%${phone}%'`
+        `select CTM_ID, CTM_NAME, CTM_PHONE, CTM_ISACTIVE, CTM_CREATEAT from customer where CTM_PHONE like '%${phone}%'`
       );
       res.json({
         data: rows,
@@ -74,7 +74,7 @@ const customersController = {
     try {
       const { s } = req.params;
       const [rows, fields] = await pool.query(
-        `select* from customer where CTM_ID like '%${s}%' or CTM_NAME like '%${s}%' or CTM_PHONE like '%${s}%'`
+        `select CTM_ID, CTM_NAME, CTM_PHONE, CTM_ISACTIVE, CTM_CREATEAT from customer where CTM_ID like '%${s}%' or CTM_NAME like '%${s}%' or CTM_PHONE like '%${s}%'`
       );
       res.json({
         data: rows,
@@ -240,23 +240,85 @@ const customersController = {
     }
   },
 
-  // PUT
-  update: async (req, res) => {
+  checkPhone: async (req, res) => {
     try {
-      const {id} = req.params
-      const { name, phone } = req.body
-      const [rows, fields] = await pool.query(`update customer set CTM_NAME='${name}', CTM_PHONE='${phone}' where CTM_ID=${id}`)
-      res.json({
-        data: rows,
-        message: "OK"
-      })
+      const { phone } = req.body;
+      const [rows, fields] = await pool.query(
+        "select CTM_ID, CTM_PASSWORD, CTM_NAME, CTM_PHONE, CTM_ISACTIVE, CTM_CREATEAT from customer where CTM_PHONE=?",
+        [phone]
+      );
+      if (rows.length > 0) {
+        if (rows[0].CTM_PASSWORD == null) {
+          res.json({
+            data: rows[0],
+            type: "new",
+            message: "Hãy tạo mật khẩu!",
+          });
+        } else {
+          res.json({
+            data: rows[0],
+            type: "old",
+            message: "Số điện thoại hợp lệ!",
+          });
+        }
+      } else {
+        res.json({
+          type: "no",
+          message: "Số điện thoại không tồn tại!",
+        });
+      }
     } catch (error) {
       res.json({
         message: "Lỗi: " + error,
       });
     }
-  }
+  },
 
+  login: async (req, res) => {
+    try {
+      const { phone, password } = req.body;
+      const [rows, fields] = await pool.query(
+        "select CTM_ID, CTM_NAME, CTM_PHONE, CTM_ISACTIVE, CTM_CREATEAT from customer where CTM_PHONE=? and CTM_PASSWORD=?",
+        [phone, password]
+      );
+      if (rows.length > 0) {
+        res.json({
+          auth: true,
+          data: rows[0],
+          message: "Đăng nhập thành công",
+        });
+      } else {
+        res.json({
+          auth: false,
+          data: {},
+          message: "Sai thông tin đăng nhập",
+        });
+      }
+    } catch (error) {
+      res.json({
+        message: "Lỗi: " + error,
+      });
+    }
+  },
+
+  // PUT
+  update: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { name, phone } = req.body;
+      const [rows, fields] = await pool.query(
+        `update customer set CTM_NAME='${name}', CTM_PHONE='${phone}' where CTM_ID=${id}`
+      );
+      res.json({
+        data: rows,
+        message: "OK",
+      });
+    } catch (error) {
+      res.json({
+        message: "Lỗi: " + error,
+      });
+    }
+  },
 };
 
 module.exports = customersController;
