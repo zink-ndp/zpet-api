@@ -68,6 +68,21 @@ const servicesController = {
     }
   },
 
+  getRate: async (req, res) => {
+    try {
+      const {id} = req.params
+      const [rows, fields] = await pool.query("select r.*, c.CTM_NAME from rate r join customer c on c.CTM_ID=r.CTM_ID where r.SRV_ID=?",[id])
+      res.json({
+        data: rows,
+        message: "OK"
+      })
+    } catch (error) {
+      res.json({
+        data: [],
+        message: "Lỗi: " + error,
+      });
+    }
+  },
   // PUT _ UPDATE
 
   update: async (req, res) => {

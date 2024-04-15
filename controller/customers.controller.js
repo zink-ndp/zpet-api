@@ -199,6 +199,21 @@ const customersController = {
     }
   },
 
+  createPassword: async (req, res) => {
+    try {
+      const { id } = req.params
+      const { password } = req.body
+      const [rows, fields] = await pool.query("update customer set CTM_PASSWORD=? where CTM_ID=?",[password, id])
+      res.json({
+        message: "Tạo mật khẩu mới thành công"
+      })
+    } catch (error) {
+      res.json({
+        message: error,
+      });
+    }
+  },
+
   addAddress: async (req, res) => {
     try {
       const { id } = req.params;

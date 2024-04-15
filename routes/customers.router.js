@@ -20,6 +20,7 @@ router.post("/", customersController.create)
 router.post("/:id/address", customersController.addAddress)
 router.post("/checkPhone", customersController.checkPhone)
 router.post("/login", customersController.login)
+router.post("/createPassword/:id", customersController.createPassword)
 
 // UPDATE - PUT
 router.put("/:id", customersController.update)
